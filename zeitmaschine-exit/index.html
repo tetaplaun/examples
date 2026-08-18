@@ -1,158 +1,25 @@
 <!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Die kaputte Zeitmaschine – EXIT</title>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>EXIT-Spielesammlung</title>
 <style>
-:root{
- --bg:#0b1020;--card:#171d35;--card2:#0f152b;--text:#f7f8ff;--muted:#aeb7d7;
- --accent:#ffd166;--blue:#70e6ff;--line:#36416f;--red:#ff5c70;--green:#9bea73
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
- margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
- color:var(--text);background:radial-gradient(circle at top,#1c2851,#0b1020 55%,#070a12);
- min-height:100vh
-}
-header{
- position:sticky;top:0;z-index:20;background:rgba(9,13,28,.95);
- border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)
-}
-.status{
- max-width:900px;margin:auto;padding:10px 16px 6px;
- display:grid;grid-template-columns:1fr 1fr;gap:8px
-}
-.stat{background:#12182e;border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center}
-.stat small{display:block;color:var(--muted);font-size:.72rem}
-.stat strong{font-size:1.02rem}
-.progressWrap{max-width:900px;margin:auto;padding:0 16px 12px}
-.progressHead{display:flex;justify-content:space-between;gap:10px;font-size:.82rem;color:var(--muted);margin-bottom:6px}
-.progressTrack{height:12px;background:#11182d;border:1px solid var(--line);border-radius:999px;overflow:hidden}
-.progressFill{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--accent));transition:width .4s}
-.wrap{max-width:900px;margin:auto;padding:18px 18px 80px}
-.screen{display:none}
-#start{display:block}
-.screen:target{display:block}
-body:has(.screen:target) #start:not(:target){display:none}
-.hero{text-align:center;padding:46px 0 24px}
-.hero h1{font-size:clamp(2.2rem,10vw,4.6rem);margin:.15em 0}
-.hero p{color:var(--muted)}
-.card{
- background:linear-gradient(180deg,#202846,#171d35);border:1px solid var(--line);
- border-radius:22px;padding:22px;margin:18px 0;box-shadow:0 18px 45px rgba(0,0,0,.27)
-}
-.epoch{font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;color:var(--blue);font-weight:900}
-h2{font-size:clamp(1.55rem,6vw,2.5rem);margin:.25em 0 .65em}
-p{line-height:1.6}
-.notice{background:var(--card2);border-left:4px solid var(--accent);padding:14px;border-radius:12px;margin:14px 0;line-height:1.55}
-.redbtn,.nextbtn{
- width:100%;border:0;border-radius:15px;padding:16px;font-weight:900;font-size:1rem;
- cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
- display:block;text-align:center;text-decoration:none
-}
-.redbtn{background:var(--red);color:white;font-size:1.08rem}
-.nextbtn{background:var(--accent);color:#111;margin-top:14px}
-.answer{
- width:100%;background:#0c1227;color:white;border:2px solid #3b497b;border-radius:15px;
- padding:16px;font-size:1.2rem;outline:none;margin-top:10px
-}
-.answer:focus{border-color:var(--blue)}
-details{
- background:#10172f;border:1px solid #415184;border-radius:14px;
- padding:13px 14px;margin-top:10px
-}
-details.solution{border-color:#7f5060;background:#22131b}
-summary{font-weight:900;cursor:pointer;color:#dce5ff}
-.solution summary{color:#ffd8df}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
-.tile{background:#10162d;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
-.big{font-size:2rem}
-.rule{color:var(--muted);font-size:.9rem}
-form{margin-top:8px}
-input:invalid:not(:placeholder-shown){border-color:#ff7a8a}
-input:valid{border-color:#79db80}
-body:has(#lab:target) #progressFill{width:0}
-body:has(#dino:target) #progressFill{width:0}
-body:has(#rome:target) #progressFill{width:16.666%}
-body:has(#castle:target) #progressFill{width:33.333%}
-body:has(#pirate:target) #progressFill{width:50%}
-body:has(#victorian:target) #progressFill{width:66.666%}
-body:has(#future:target) #progressFill{width:83.333%}
-body:has(#finale:target), body:has(#win:target) #progressFill{width:100%}
-#progressText::after{content:"0 von 6 Teilen"}
-body:has(#rome:target) #progressText::after{content:"1 von 6 Teilen"}
-body:has(#castle:target) #progressText::after{content:"2 von 6 Teilen"}
-body:has(#pirate:target) #progressText::after{content:"3 von 6 Teilen"}
-body:has(#victorian:target) #progressText::after{content:"4 von 6 Teilen"}
-body:has(#future:target) #progressText::after{content:"5 von 6 Teilen"}
-body:has(#finale:target) #progressText::after,
-body:has(#win:target) #progressText::after{content:"6 von 6 Teilen"}
-@media(max-width:620px){.grid{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
-<header>
- <div class="status">
-  <div class="stat"><small>ZEIT</small><strong id="timer">00:00</strong></div>
-  <div class="stat"><small>FORTSCHRITT</small><strong id="progressText"></strong></div>
- </div>
- <div class="progressWrap">
-  <div class="progressHead"><span>⚙️ Reparaturfortschritt</span><span></span></div>
-  <div class="progressTrack"><div class="progressFill" id="progressFill"></div></div>
- </div>
-</header>
-<div class="wrap">
-<section id="start" class="screen">
- <div class="hero">
-  <div class="epoch">EXIT-Zeitreise</div>
-  <h1>⏳ Die kaputte Zeitmaschine</h1>
-  <p>Für 3 Spieler · ca. 45–90 Minuten</p>
- </div>
- <div class="card">
-  <h2>Das Labor von Dr. Tempus</h2>
-  <div class="notice"><strong>WARNUNG!</strong><br>Die Maschine ist noch nicht fertig.<br>Unter keinen Umständen den roten Knopf drücken.<br>Wirklich nicht.<br><br>– Dr. Tempus</div>
-  <a class="redbtn" id="startBtn" href="#lab">🔴 ROTEN KNOPF DRÜCKEN</a>
- </div>
-</section>
-<section id="lab" class="screen">
- <div class="card">
-  <div class="epoch">Labor · 2026</div><h2>⚠️ Notfallprotokoll</h2>
-  <div class="notice">KLICK. WUUUUMM! KRACK!<br><br>ZEITMASCHINE BESCHÄDIGT<br>6 BAUTEILE VERLOREN</div>
-  <p>Verschiebt jeden Buchstaben um <strong>einen Platz im Alphabet zurück</strong>.</p>
-  <div class="notice" style="font-size:1.55rem;text-align:center;letter-spacing:.2em">L S F J E F</div>
-  <form action="#dino"><input class="answer" required pattern="[Kk][Rr][Ee][Ii][Dd][Ee]" title="Die Lösung ist noch nicht richtig." placeholder="Eure Lösung hier eintragen"><button class="nextbtn" type="submit">⚡ Lösung prüfen & Zeitsprung starten</button></form>
-  <details><summary>💡 Hinweis 1</summary><p>Beispiel: B wird zu A. D wird zu C.</p></details>
-  <details><summary>💡 Hinweis 2</summary><p>L→K, S→R, F→E …</p></details>
-  <details class="solution"><summary>🔎 Auflösung anzeigen</summary><p><strong>KREIDE</strong></p></details>
- </div>
-</section>
-<section id="dino" class="screen">
- <div class="card">
-  <div class="epoch">Station 1 · Kreidezeit</div><h2>🦖 Fußspuren im Schlamm</h2>
-  <div class="grid"><div class="tile"><div class="big">🦖</div>2 Tiere<br>je 4 Beine</div><div class="tile"><div class="big">🦕</div>1 Tier<br>4 Beine</div><div class="tile"><div class="big">🐦</div>3 Tiere<br>je 2 Beine</div></div>
-  <p>Wie viele Beine sind es insgesamt? Der Code braucht drei Stellen.</p>
-  <form action="#rome"><input class="answer" required inputmode="numeric" pattern="018" title="Der Code ist noch nicht richtig." placeholder="Euren Code eintragen"><button class="nextbtn" type="submit">🔋 Code prüfen & Energiezelle einsetzen</button></form>
-  <details><summary>💡 Hinweis 1</summary><p>Zählt die Beine, nicht die Tiere.</p></details><details><summary>💡 Hinweis 2</summary><p>2×4 + 1×4 + 3×2. Der Code muss drei Stellen haben.</p></details><details class="solution"><summary>🔎 Auflösung anzeigen</summary><p><strong>018</strong></p></details>
- </div>
-</section>
-<section id="rome" class="screen"><div class="card"><div class="epoch">Station 2 · Rom · 80 n. Chr.</div><h2>🏛️ Das römische Zahlentor</h2><p>Wandelt die Zahlen um und nehmt jeweils nur die Einerstelle.</p><div class="grid"><div class="tile"><strong>XXIV</strong></div><div class="tile"><strong>XLII</strong></div><div class="tile"><strong>XV</strong></div></div><p class="rule">I=1 · V=5 · X=10 · L=50 · C=100</p><form action="#castle"><input class="answer" required inputmode="numeric" pattern="425" title="Der Code ist noch nicht richtig." placeholder="Euren Code eintragen"><button class="nextbtn" type="submit">⚙️ Code prüfen & Zeitstabilisator einsetzen</button></form><details><summary>💡 Hinweis 1</summary><p>Wandelt erst alle drei Zahlen vollständig um.</p></details><details><summary>💡 Hinweis 2</summary><p>XXIV=24, XLII=42, XV=15. Jetzt nur die Einerstellen.</p></details><details class="solution"><summary>🔎 Auflösung anzeigen</summary><p><strong>425</strong></p></details></div></section>
-<section id="castle" class="screen"><div class="card"><div class="epoch">Station 3 · Mittelalter · 1250</div><h2>🏰 Die drei Ritter</h2><div class="notice">Konrad besitzt nicht den Drachen.<br>Friedrich besitzt den Adler.<br>Der Löwe gehört zu Konrad.<br>Der Adler trägt die Zahl 6.<br>Der Drache trägt die höchste Zahl.</div><p>Zahlen: <strong>3 · 6 · 8</strong>. Lest Konrad – Friedrich – Heinrich.</p><form action="#pirate"><input class="answer" required inputmode="numeric" pattern="368" title="Der Code ist noch nicht richtig." placeholder="Euren Code eintragen"><button class="nextbtn" type="submit">🎛️ Code prüfen & Steuerungsmodul einsetzen</button></form><details><summary>💡 Hinweis 1</summary><p>Beginnt mit Friedrich und Konrad.</p></details><details><summary>💡 Hinweis 2</summary><p>Konrad=Löwe, Friedrich=Adler=6. Der Drache hat 8.</p></details><details class="solution"><summary>🔎 Auflösung anzeigen</summary><p><strong>368</strong></p></details></div></section>
-<section id="pirate" class="screen"><div class="card"><div class="epoch">Station 4 · Karibik · 1718</div><h2>🏴‍☠️ Die Schatzkarte</h2><p>Start bei <strong>C2</strong>: 2 nach rechts, 1 nach unten, 4 nach oben.</p><div class="notice"><strong>Piraten lügen.</strong> Tauscht deshalb OBEN und UNTEN.</div><form action="#victorian"><input class="answer" required inputmode="numeric" pattern="749" title="Der Code ist noch nicht richtig." placeholder="Euren Code eintragen"><button class="nextbtn" type="submit">🕰️ Code prüfen & Chronometer einsetzen</button></form><details><summary>💡 Hinweis 1</summary><p>„1 nach unten“ bedeutet tatsächlich 1 nach oben.</p></details><details><summary>💡 Hinweis 2</summary><p>C2 → E2 → E1 → E5.</p></details><details class="solution"><summary>🔎 Auflösung anzeigen</summary><p><strong>749</strong></p></details></div></section>
-<section id="victorian" class="screen"><div class="card"><div class="epoch">Station 5 · Jahr 1885</div><h2>🚂 Was gab es schon?</h2><div class="grid"><div class="tile">☎️ Telefon<br><strong>5</strong></div><div class="tile">💡 Glühlampe<br><strong>8</strong></div><div class="tile">🚗 modernes Auto<br><strong>1</strong></div><div class="tile">📱 Smartphone<br><strong>9</strong></div><div class="tile">🚂 Dampflokomotive<br><strong>2</strong></div><div class="tile">✈️ Motorflugzeug<br><strong>7</strong></div></div><form action="#future"><input class="answer" required inputmode="numeric" pattern="582" title="Der Code ist noch nicht richtig." placeholder="Euren Code eintragen"><button class="nextbtn" type="submit">⚡ Code prüfen & Flux-Spule einsetzen</button></form><details><summary>💡 Hinweis 1</summary><p>Smartphone und Motorflugzeug sind zu neu.</p></details><details><summary>💡 Hinweis 2</summary><p>Telefon, Glühlampe und Dampflokomotive.</p></details><details class="solution"><summary>🔎 Auflösung anzeigen</summary><p><strong>582</strong></p></details></div></section>
-<section id="future" class="screen"><div class="card"><div class="epoch">Station 6 · Zukunft · 2167</div><h2>🚀 Zukunftscode</h2><p>○=1 · △=2 · □=3</p><div class="notice">Gleiche Symbole werden multipliziert. Unterschiedliche werden addiert.</div><div class="grid"><div class="tile big">△ △</div><div class="tile big">□ ○</div><div class="tile big">□ △</div></div><form action="#finale"><input class="answer" required inputmode="numeric" pattern="445" title="Der Code ist noch nicht richtig." placeholder="Euren Code eintragen"><button class="nextbtn" type="submit">🧭 Code prüfen & Navigationskern einsetzen</button></form><details><summary>💡 Hinweis 1</summary><p>Beim ersten Paar gilt 2×2.</p></details><details><summary>💡 Hinweis 2</summary><p>Die drei Ergebnisse sind 4, 4 und 5.</p></details><details class="solution"><summary>🔎 Auflösung anzeigen</summary><p><strong>445</strong></p></details></div></section>
-<section id="finale" class="screen"><div class="card"><div class="epoch">Finale</div><h2>🔥 Der Rückkehrcode</h2><div class="notice">REPARATUR: 100 %<br>RÜCKKEHRCODE FEHLT</div><div style="font-size:2rem;text-align:center;margin:18px">★ ● ▲ ■ ◆ ☾</div><div class="notice">★=2 · ●=0 · ▲=2 · ■=6 · ◆=7 · ☾=3</div><form action="#win"><input class="answer" required inputmode="numeric" pattern="202673" title="Der Rückkehrcode ist noch nicht richtig." placeholder="Euren Rückkehrcode eintragen"><button class="nextbtn" type="submit">🏠 Rückkehrcode prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>Lest die sechs Symbole der Reihe nach.</p></details><details><summary>💡 Hinweis 2</summary><p>Die ersten vier Ziffern ergeben 2026.</p></details><details class="solution"><summary>🔎 Auflösung anzeigen</summary><p><strong>202673</strong></p></details></div></section>
-<section id="win" class="screen"><div class="hero"><div class="epoch">Zeitreise beendet</div><h1>🎉 Geschafft!</h1></div><div class="card"><div class="notice">ZIELZEIT BESTÄTIGT<br>3 … 2 … 1 … ZEITSPRUNG!</div><p>Ihr seid zurück im Jahr 2026.</p><p><strong>Eure Zeit:</strong> <span id="finalTime">–</span></p><div class="notice">„Herzlichen Glückwunsch. Ihr habt meine Zeitmaschine repariert.<br><br>Allerdings gibt es noch ein kleines Problem …<br><strong>Wo bin eigentlich ICH?</strong><br><br>– Dr. Tempus“</div><a class="nextbtn" href="#start">Noch einmal spielen</a></div></section>
-</div>
-<script>
-(function(){
- const timer=document.getElementById("timer"); const finalTime=document.getElementById("finalTime"); const startBtn=document.getElementById("startBtn"); let handle=null;
- function fmt(ms){const sec=Math.floor(ms/1000),m=Math.floor(sec/60),s=sec%60;return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")}
- function tick(){const started=Number(sessionStorage.getItem("tm-start")||0);if(!started)return;const out=fmt(Date.now()-started);timer.textContent=out;if(location.hash==="#win")finalTime.textContent=out}
- function begin(){sessionStorage.setItem("tm-start",String(Date.now()));tick();clearInterval(handle);handle=setInterval(tick,1000)}
- if(startBtn)startBtn.addEventListener("click",begin);const started=Number(sessionStorage.getItem("tm-start")||0);if(started){tick();handle=setInterval(tick,1000)}window.addEventListener("hashchange",tick)
-})();
-</script>
-</body>
-</html>
+:root{--bg:#0b1020;--card:#171d35;--card2:#0f152b;--text:#f7f8ff;--muted:#aeb7d7;--accent:#ffd166;--blue:#70e6ff;--line:#36416f;--red:#ff5c70}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at top,#1c2851,#0b1020 55%,#070a12);min-height:100vh}header{position:sticky;top:0;z-index:20;background:rgba(9,13,28,.96);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}.status{max-width:900px;margin:auto;padding:10px 16px 6px}.stat{background:#12182e;border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center}.stat small{display:block;color:var(--muted);font-size:.72rem}.progressWrap{max-width:900px;margin:auto;padding:0 16px 12px}.progressTrack{height:12px;background:#11182d;border:1px solid var(--line);border-radius:999px;overflow:hidden}.progressFill{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--accent));transition:width .4s}.wrap{max-width:900px;margin:auto;padding:18px 18px 80px}.screen{display:none}#menu{display:block}.screen:target{display:block}body:has(.screen:target) #menu:not(:target){display:none}.hero{text-align:center;padding:42px 0 22px}.hero h1{font-size:clamp(2.1rem,10vw,4.4rem);margin:.15em 0}.hero p{color:var(--muted)}.card,.gameCard{background:linear-gradient(180deg,#202846,#171d35);border:1px solid var(--line);border-radius:22px;padding:22px;margin:18px 0;box-shadow:0 18px 45px rgba(0,0,0,.27)}.epoch{font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;color:var(--blue);font-weight:900}h2{font-size:clamp(1.55rem,6vw,2.5rem);margin:.25em 0 .65em}p{line-height:1.6}.notice{background:var(--card2);border-left:4px solid var(--accent);padding:14px;border-radius:12px;margin:14px 0;line-height:1.55}.btn,.redbtn,.nextbtn{width:100%;border:0;border-radius:15px;padding:16px;font-weight:900;font-size:1rem;cursor:pointer;display:block;text-align:center;text-decoration:none;margin-top:12px}.btn{background:#27325b;color:white;border:1px solid #465585}.redbtn{background:var(--red);color:white}.nextbtn{background:var(--accent);color:#111}.answer{width:100%;background:#0c1227;color:white;border:2px solid #3b497b;border-radius:15px;padding:16px;font-size:1.2rem;outline:none;margin-top:10px}.answer:focus{border-color:var(--blue)}details{background:#10172f;border:1px solid #415184;border-radius:14px;padding:13px 14px;margin-top:10px}details.solution{border-color:#7f5060;background:#22131b}summary{font-weight:900;cursor:pointer;color:#dce5ff}.solution summary{color:#ffd8df}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}.tile{background:#10162d;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:1.12rem}.menuGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.gameCard p{color:var(--muted)}@media(max-width:650px){.grid,.grid2,.menuGrid{grid-template-columns:1fr}}body:has(#g1r2:target) #progressFill,body:has(#g2r2:target) #progressFill{width:16.66%}body:has(#g1r3:target) #progressFill,body:has(#g2r3:target) #progressFill{width:33.33%}body:has(#g1r4:target) #progressFill,body:has(#g2r4:target) #progressFill{width:50%}body:has(#g1r5:target) #progressFill,body:has(#g2r5:target) #progressFill{width:66.66%}body:has(#g1r6:target) #progressFill,body:has(#g2r6:target) #progressFill{width:83.33%}body:has(#g1final:target) #progressFill,body:has(#g1win:target) #progressFill,body:has(#g2final:target) #progressFill,body:has(#g2win:target) #progressFill{width:100%}#progressText::after{content:"0 von 6"}body:has(#g1r2:target) #progressText::after,body:has(#g2r2:target) #progressText::after{content:"1 von 6"}body:has(#g1r3:target) #progressText::after,body:has(#g2r3:target) #progressText::after{content:"2 von 6"}body:has(#g1r4:target) #progressText::after,body:has(#g2r4:target) #progressText::after{content:"3 von 6"}body:has(#g1r5:target) #progressText::after,body:has(#g2r5:target) #progressText::after{content:"4 von 6"}body:has(#g1r6:target) #progressText::after,body:has(#g2r6:target) #progressText::after{content:"5 von 6"}body:has(#g1final:target) #progressText::after,body:has(#g1win:target) #progressText::after,body:has(#g2final:target) #progressText::after,body:has(#g2win:target) #progressText::after{content:"6 von 6"}
+</style></head><body><header><div class="status"><div class="stat"><small>FORTSCHRITT</small><strong id="progressText"></strong></div></div><div class="progressWrap"><div class="progressTrack"><div class="progressFill" id="progressFill"></div></div></div></header><div class="wrap">
+<section id="menu" class="screen"><div class="hero"><div class="epoch">EXIT-Spielesammlung</div><h1>🔐 Wählt euer Abenteuer</h1><p>Zwei vollständige EXIT-Spiele</p></div><div class="menuGrid"><div class="gameCard"><div class="epoch">Spiel 1</div><h2>⏳ Die kaputte Zeitmaschine</h2><p>Reist durch die Zeit, sammelt sechs Bauteile und kehrt nach 2026 zurück.</p><p><strong>60–90 Minuten · mittel</strong></p><a class="nextbtn" href="#g1start">Zeitmaschine starten</a></div><div class="gameCard"><div class="epoch">Spiel 2</div><h2>🌊 Das Geheimnis des verlassenen Leuchtturms</h2><p>Ein Sturm zieht auf. Repariert sechs Systeme des Leuchtturms, bevor ein Schiff die Küste erreicht.</p><p><strong>60–90 Minuten · mittel</strong></p><a class="nextbtn" href="#g2start">Leuchtturm betreten</a></div></div></section>
+<section id="g1start" class="screen"><div class="card"><div class="epoch">Spiel 1</div><h2>⏳ Die kaputte Zeitmaschine</h2><div class="notice">⏱️ Öffnet Uhr → Stoppuhr und startet sie zusammen mit dem roten Knopf.</div><div class="notice"><strong>WARNUNG!</strong><br>Unter keinen Umständen den roten Knopf drücken.<br>– Dr. Tempus</div><a class="redbtn" href="#g1r1">🔴 ROTEN KNOPF DRÜCKEN</a><a class="btn" href="#menu">← Menü</a></div></section>
+<section id="g1r1" class="screen"><div class="card"><div class="epoch">Labor</div><h2>⚠️ Startprotokoll</h2><p>Verschiebt jeden Buchstaben der richtigen Zeile um 1 zurück und lest das Ergebnis rückwärts.</p><div class="grid"><div class="tile code">F E J F S L</div><div class="tile code">X K C M Q A</div><div class="tile code">T N Z P U R</div></div><form action="#g1r2"><input class="answer" required pattern="[Kk][Rr][Ee][Ii][Dd][Ee]" placeholder="Zielwort"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>F wird zu E.</p></details><details><summary>💡 Hinweis 2</summary><p>Die erste Zeile wird EDIERK.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>KREIDE</strong></p></details></div></section>
+<section id="g1r2" class="screen"><div class="card"><div class="epoch">Kreidezeit</div><h2>🦖 Die drei Spuren</h2><p>Raptor, T-Rex und Triceratops haben 4, 6 oder 9 Spuren. Triceratops &gt; Raptor. T-Rex nicht am meisten. Raptor gerade. Triceratops genau 3 mehr als T-Rex.</p><div class="notice">Code: Raptor×2 | T-Rex−1 | Triceratops÷3</div><form action="#g1r3"><input class="answer" required pattern="853" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>Triceratops=9.</p></details><details><summary>💡 Hinweis 2</summary><p>Raptor=4, T-Rex=6.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>853</strong></p></details></div></section>
+<section id="g1r3" class="screen"><div class="card"><div class="epoch">Rom</div><h2>🏛️ Die Inschrift</h2><div class="grid2"><div class="tile">IX · ◆</div><div class="tile">XIV · ▲</div><div class="tile">XVIII · ■</div><div class="tile">XXI · ●</div></div><div class="notice">Ordnet klein nach groß. ◆=7, ▲=4, ■=2, ●=9.</div><form action="#g1r4"><input class="answer" required pattern="7429" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>9,14,18,21.</p></details><details><summary>💡 Hinweis 2</summary><p>◆ ▲ ■ ●</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>7429</strong></p></details></div></section>
+<section id="g1r4" class="screen"><div class="card"><div class="epoch">Mittelalter</div><h2>🏰 Das falsche Wappen</h2><div class="notice code">LÖWE 3 – ADLER 6 – WOLF 5 – DRACHE 8</div><p>Der falsche Schild steht direkt rechts vom Adler. Streicht ihn und lest die übrigen Zahlen.</p><form action="#g1r5"><input class="answer" required pattern="368" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>Rechts vom Adler ist Wolf.</p></details><details><summary>💡 Hinweis 2</summary><p>5 fällt weg.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>368</strong></p></details></div></section>
+<section id="g1r5" class="screen"><div class="card"><div class="epoch">Piraten</div><h2>🏴‍☠️ Verdrehter Kompass</h2><div class="notice">NORD=OST · OST=SÜD · SÜD=WEST · WEST=NORD</div><p>Start B2: NORD 2 → OST 1 → SÜD 2 → WEST 1. Spalte als Zahl, dann Zeile.</p><form action="#g1r6"><input class="answer" required pattern="22" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>NORD bedeutet rechts.</p></details><details><summary>💡 Hinweis 2</summary><p>B2 → D2 → D3 → B3 → B2.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>22</strong></p></details></div></section>
+<section id="g1r6" class="screen"><div class="card"><div class="epoch">Zukunft</div><h2>🚀 Die Logikmaschine</h2><div class="notice code">2△3=8 · 3△2=9 · 4○2=6 · 5○3=8</div><p>Berechnet 4△2 · 6○3 · 3△3.</p><form action="#g1final"><input class="answer" required pattern="12912" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>○=Addition; △=erste×zweite+erste.</p></details><details><summary>💡 Hinweis 2</summary><p>12 · 9 · 12.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>12912</strong></p></details></div></section>
+<section id="g1final" class="screen"><div class="card"><div class="epoch">Finale</div><h2>🔥 Rückkehrcode</h2><div class="notice">Zahlen: 8,7,3,4,2,1. Nach 2026: größte−kleinste, dann Anzahl gerader Zahlen.</div><form action="#g1win"><input class="answer" required pattern="202673" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>8−1=7.</p></details><details><summary>💡 Hinweis 2</summary><p>Gerade: 8,4,2.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>202673</strong></p></details></div></section>
+<section id="g1win" class="screen"><div class="card"><h2>🎉 Geschafft!</h2><div class="notice">⏱️ Stoppuhr stoppen!</div><p>Ihr seid zurück in 2026.</p><a class="nextbtn" href="#menu">Zur Spielauswahl</a></div></section>
+<section id="g2start" class="screen"><div class="card"><div class="epoch">Spiel 2</div><h2>🌊 Das Geheimnis des verlassenen Leuchtturms</h2><p>Ein Sturm zieht auf. Vor der Küste nähert sich ein Schiff, doch das Leuchtfeuer ist ausgefallen.</p><div class="notice">⏱️ Startet die iPhone-Stoppuhr zusammen mit dem Knopf.</div><a class="redbtn" href="#g2r1">🌩️ LEUCHTTURM BETRETEN</a><a class="btn" href="#menu">← Menü</a></div></section>
+<section id="g2r1" class="screen"><div class="card"><div class="epoch">Eingangshalle</div><h2>🗝️ Die vier Türen</h2><p>Türen: 2,4,6,8. Richtig ist: größer als 3, kleiner als 8, nicht durch 3 teilbar, Hälfte ist ungerade.</p><p>Multipliziert die richtige Zahl mit 11.</p><form action="#g2r2"><input class="answer" required pattern="44" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>Zwischen 3 und 8 bleiben 4 und 6.</p></details><details><summary>💡 Hinweis 2</summary><p>6 ist durch 3 teilbar, also bleibt 4.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p>4×11 = <strong>44</strong>.</p></details></div></section>
+<section id="g2r2" class="screen"><div class="card"><div class="epoch">Maschinenraum</div><h2>⚙️ Die Zahnräder</h2><p>A, B, C haben 8,12,18 Zähne. A&lt;C. B hat 4 mehr als A. C ist nicht 12.</p><div class="notice">Code: A÷2 | B÷3 | C÷6</div><form action="#g2r3"><input class="answer" required pattern="443" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>A=8, B=12.</p></details><details><summary>💡 Hinweis 2</summary><p>C=18.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>443</strong></p></details></div></section>
+<section id="g2r3" class="screen"><div class="card"><div class="epoch">Kartenzimmer</div><h2>🧭 Der falsche Kompass</h2><div class="notice">NORD=WEST · WEST=SÜD · SÜD=OST · OST=NORD</div><p>Start C3: NORD 1 → OST 2 → SÜD 1. Spalte als Zahl, dann Zeile.</p><form action="#g2r4"><input class="answer" required pattern="31" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>NORD bedeutet links.</p></details><details><summary>💡 Hinweis 2</summary><p>C3 → B3 → B1 → C1.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p>C1 = <strong>31</strong>.</p></details></div></section>
+<section id="g2r4" class="screen"><div class="card"><div class="epoch">Wärterzimmer</div><h2>📜 Das Tagebuch</h2><p>Ordnet 3,5,7,9: Der erste ist nicht 3. Der letzte ist 9. Zwischen 5 und 9 liegt genau ein Eintrag. 7 steht vor 5.</p><form action="#g2r5"><input class="answer" required pattern="7539" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>9 ist Position 4; 5 ist Position 2.</p></details><details><summary>💡 Hinweis 2</summary><p>7 muss Position 1 sein.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>7539</strong></p></details></div></section>
+<section id="g2r5" class="screen"><div class="card"><div class="epoch">Laternenkammer</div><h2>🔦 Die Linsen</h2><div class="grid2"><div class="tile">Rot 2</div><div class="tile">Blau 4</div><div class="tile">Grün 6</div><div class="tile">Gelb 8</div></div><p>Gelb ganz rechts. Blau links von Grün. Rot nicht neben Gelb. Grün nicht ganz links.</p><form action="#g2r6"><input class="answer" required pattern="2468" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>Gelb ist Position 4.</p></details><details><summary>💡 Hinweis 2</summary><p>Rot–Blau–Grün–Gelb.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>2468</strong></p></details></div></section>
+<section id="g2r6" class="screen"><div class="card"><div class="epoch">Signalraum</div><h2>📡 Morse-Relais</h2><div class="notice code">A=·− · B=−··· · C=−·−· · D=−··</div><p>Signal: −·· ·− −··. Danach A=1, B=2, C=3, D=4.</p><form action="#g2final"><input class="answer" required pattern="414" inputmode="numeric" placeholder="Code"><button class="nextbtn">Prüfen</button></form><details><summary>💡 Hinweis 1</summary><p>−·· = D.</p></details><details><summary>💡 Hinweis 2</summary><p>D A D.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>414</strong></p></details></div></section>
+<section id="g2final" class="screen"><div class="card"><div class="epoch">Finale</div><h2>💡 Das letzte Licht</h2><div class="notice code">6 · 4 · 2 · 8 · 4 · 4</div><p>1. größte−kleinste. 2. Wie oft kommt die häufigste Zahl vor? 3. Anzahl aller geraden Zahlen.</p><form action="#g2win"><input class="answer" required pattern="636" inputmode="numeric" placeholder="Endcode"><button class="nextbtn">Leuchtfeuer aktivieren</button></form><details><summary>💡 Hinweis 1</summary><p>8−2=6.</p></details><details><summary>💡 Hinweis 2</summary><p>4 kommt dreimal; alle sechs sind gerade.</p></details><details class="solution"><summary>🔎 Auflösung</summary><p><strong>636</strong></p></details></div></section>
+<section id="g2win" class="screen"><div class="card"><h2>🌟 Der Leuchtturm leuchtet!</h2><div class="notice">⏱️ Stoppuhr stoppen!</div><p>Das Schiff ändert rechtzeitig seinen Kurs.</p><div class="notice">„Wenn du das liest, hast du den Turm gerettet. Aber wer hat das Licht eigentlich ausgeschaltet?“</div><a class="nextbtn" href="#menu">Zur Spielauswahl</a></div></section>
+</div></body></html>
