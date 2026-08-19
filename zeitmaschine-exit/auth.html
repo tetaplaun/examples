@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EXIT Login</title>
+<style>
+:root{--bg:#0b1020;--card:#171d35;--text:#f7f8ff;--muted:#aeb8d8;--accent:#ffd166;--line:#3b4775;--red:#ff8fa0}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#202a52,#080b16 68%);color:var(--text);font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;padding:20px}.card{width:min(94vw,440px);background:linear-gradient(180deg,#202846,#151a30);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 25px 70px rgba(0,0,0,.45)}h1{margin:.2em 0}.small{color:var(--muted);line-height:1.5}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0}.tabs label{display:block;text-align:center;padding:12px;border:1px solid var(--line);border-radius:12px;background:#11172e;font-weight:800;cursor:pointer}.mode{position:absolute;opacity:0;pointer-events:none}.panel{display:none}#loginMode:checked~.tabs label[for=loginMode],#registerMode:checked~.tabs label[for=registerMode]{background:var(--accent);color:#111}#loginMode:checked~#loginPanel{display:block}#registerMode:checked~#registerPanel{display:block}.field{width:100%;background:#0b1125;color:white;border:2px solid #435181;border-radius:13px;padding:14px;margin:7px 0;font-size:1rem}.btn{width:100%;border:0;border-radius:14px;padding:15px;margin-top:10px;font-weight:900;font-size:1rem;background:var(--accent);color:#111}.err{min-height:24px;color:var(--red);font-weight:700;margin-top:10px}.epoch{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:#70e6ff;font-weight:900}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="epoch">EXIT Online</div>
+<h1>🔐 Spielerprofil</h1>
+<p class="small">Melde dich an oder erstelle ein neues Profil. Dein Punktestand wird online gespeichert.</p>
+<input class="mode" type="radio" name="mode" id="loginMode" checked>
+<input class="mode" type="radio" name="mode" id="registerMode">
+<div class="tabs"><label for="loginMode">Anmelden</label><label for="registerMode">Neu erstellen</label></div>
+<form id="loginPanel" class="panel">
+<input id="lu" class="field" placeholder="Benutzername" autocomplete="username" required>
+<input id="lp" class="field" type="password" placeholder="Passwort" autocomplete="current-password" required>
+<button class="btn" type="submit">Anmelden</button>
+</form>
+<form id="registerPanel" class="panel">
+<input id="ru" class="field" placeholder="Neuer Benutzername" autocomplete="username" required>
+<input id="rp" class="field" type="password" placeholder="Passwort" autocomplete="new-password" required>
+<input id="rp2" class="field" type="password" placeholder="Passwort wiederholen" autocomplete="new-password" required>
+<button class="btn" type="submit">Profil erstellen</button>
+</form>
+<div id="err" class="err"></div>
+</div>
+<script>
+(function(){
+var API='https://sduzfdktpxpigysvbckf.supabase.co/functions/v1/exit-api';
+var TK='exit_token',UK='exit_user';
+function err(t){document.getElementById('err').textContent=t||''}
+async function call(action,username,password){
+  var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:action,username:username,password:password})});
+  var j=await r.json();
+  if(!r.ok) throw new Error(j.error||'Serverfehler');
+  localStorage.setItem(TK,j.token); localStorage.setItem(UK,j.user.username);
+  location.replace('online.html?v=20260819-1005');
+}
+document.getElementById('loginPanel').addEventListener('submit',async function(e){e.preventDefault();err('');try{await call('login',document.getElementById('lu').value.trim(),document.getElementById('lp').value)}catch(x){err(x.message)}});
+document.getElementById('registerPanel').addEventListener('submit',async function(e){e.preventDefault();err('');var p=document.getElementById('rp').value,p2=document.getElementById('rp2').value;if(p!==p2){err('Die Passwörter stimmen nicht überein.');return}try{await call('register',document.getElementById('ru').value.trim(),p)}catch(x){err(x.message)}});
+if(localStorage.getItem(TK)){location.replace('online.html?v=20260819-1005')}
+})();
+</script>
+</body>
+</html>
